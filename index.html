@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pomodoro Timer — зосередьтесь на роботі, потім відпочиньте.">
+  <title>Помідорний таймер 🍅</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Geo loader
+  <div id="geo-loader" role="status" aria-label="Завантаження">
+    <div class="loader-spinner"></div>
+  </div>
+
+  Block screen (RU)
+  <div id="block-screen" hidden role="alertdialog" aria-modal="true" aria-label="Доступ заблоковано">
+    <div class="block-screen__overlay"></div>
+    <div class="block-screen__content">
+      <div id="block-video-container" class="block-screen__video"></div>
+      <div class="block-screen__message">
+        <p class="block-screen__text" lang="uk">ГЕТЬ ЗВІДСИ</p>
+        <p class="block-screen__subtext" lang="uk">
+          Цей сайт недоступний з Росії.<br>
+          Слава Україні! 🇺🇦
+        </p>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- App
+  <div id="app" hidden>
+    <div class="app-card">
+
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-title">
+          <span class="title-deco">•</span>
+          Pomo<span class="title-tomato">d</span>oro
+          <span class="title-deco">•</span>
+        </h1>
+        <p class="app-subtitle">— FOCUS TIMER —</p>
+      </header>
+
+      <!-- Mode switcher -->
+      <nav class="mode-switcher" role="tablist" aria-label="Режими таймера">
+        <button role="tab" aria-selected="true"  data-mode="work"        class="mode-btn mode-btn--active">🍅 Work</button>
+        <button role="tab" aria-selected="false" data-mode="short-break" class="mode-btn">🫧 Short Break</button>
+        <button role="tab" aria-selected="false" data-mode="long-break"  class="mode-btn">🌿 Long Break</button>
+      </nav>
+
+      <!-- Divider dots -->
+      <div class="divider-dots" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+
+      <!-- Mode badge -->
+      <p class="mode-badge" id="mode-badge" aria-live="polite">WORK SESSION</p>
+
+      <!-- Main stage -->
+      <main class="timer-stage" aria-label="Таймер">
+
+        <!-- Left sidebar -->
+        <aside class="sidebar sidebar--left" aria-label="Прогрес сесії">
+          <p class="sidebar-label">SESSION</p>
+          <p class="sidebar-value" id="session-display">— 1 —</p>
+          <p class="sidebar-sub">OF 4</p>
+          <div class="session-dots" id="session-dots" aria-hidden="true">
+            <span class="dot dot--done"></span>
+            <span class="dot dot--done"></span>
+            <span class="dot dot--done"></span>
+            <span class="dot"></span>
+          </div>
+        </aside>
+
+        <!-- Timer display -->
+        <div class="timer-display-wrap">
+          <div class="timer-display" role="timer" aria-live="off" aria-atomic="true">
+            <output id="timer-output" class="timer-digits" aria-label="Залишилось часу">25:00</output>
+          </div>
+
+          <!-- SVG arc slider + tomato -->
+          <div class="tomato-stage">
+            <svg
+              id="arc-slider-svg"
+              viewBox="0 0 400 400"
+              xmlns="http://www.w3.org/2000/svg"
+              role="presentation"
+              aria-hidden="true"
+            >
+              <!-- Tick marks -->
+              <g id="tick-marks" class="slider__ticks"></g>
+
+              <!-- Track -->
+              <path id="slider-track"    class="slider__track"    fill="none"/>
+
+              <!-- Progress -->
+              <path id="slider-progress" class="slider__progress" fill="none"/>
+
+              <!-- Tomato illustration -->
+              <g id="tomato-illustration">
+                <!-- Shadow -->
+                <ellipse cx="200" cy="340" rx="75" ry="12" class="tomato__shadow"/>
+                <!-- Body -->
+                <circle cx="200" cy="215" r="112" class="tomato__body"/>
+                <!-- Inner shading -->
+                <circle cx="200" cy="215" r="112" class="tomato__body-shade"/>
+                <!-- Highlight -->
+                <ellipse cx="168" cy="174" rx="24" ry="15" class="tomato__highlight" transform="rotate(-35 168 174)"/>
+                <!-- Small secondary highlight -->
+                <ellipse cx="145" cy="192" rx="8" ry="5" class="tomato__highlight2" transform="rotate(-35 145 192)"/>
+                <!-- Vertical crease lines -->
+                <path d="M200 108 Q192 160 196 280 Q200 300 204 280 Q208 160 200 108" class="tomato__crease"/>
+                <path d="M200 108 Q175 155 172 240 Q178 270 186 255 Q190 200 200 108" class="tomato__crease" opacity="0.4"/>
+                <path d="M200 108 Q225 155 228 240 Q222 270 214 255 Q210 200 200 108" class="tomato__crease" opacity="0.4"/>
+                <!-- Stem -->
+                <path d="M200 108 Q204 88 216 80 Q208 94 214 106" class="tomato__stem"/>
+                <!-- Leaves -->
+                <path d="M200 110 Q183 90 172 96 Q186 106 200 110Z" class="tomato__leaf"/>
+                <path d="M200 110 Q217 90 228 96 Q214 106 200 110Z" class="tomato__leaf"/>
+                <path d="M200 110 Q196 82 200 74 Q204 82 200 110Z" class="tomato__leaf tomato__leaf--center"/>
+              </g>
+
+              <!-- Min/sec label -->
+              <text x="200" y="358" text-anchor="middle" class="slider__unit-label">MIN · SEC</text>
+
+              <!-- Tick labels -->
+              <g id="tick-labels" class="slider__labels"></g>
+
+              <!-- Handle -->
+              <circle
+                id="slider-handle"
+                class="slider__handle"
+                r="13"
+                tabindex="0"
+                role="slider"
+                aria-label="Встановити час"
+                aria-valuemin="1"
+                aria-valuemax="60"
+                aria-valuenow="25"
+                aria-valuetext="25 хвилин"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <aside class="sidebar sidebar--right" aria-label="Сьогоднішній прогрес">
+          <p class="sidebar-label">TODAY</p>
+          <p class="sidebar-value sidebar-value--count">— <span id="session-count">0</span> —</p>
+          <p class="sidebar-sub">POMODOROS</p>
+          <div class="focus-badge">
+            <span class="focus-badge__label">FOCUS ON</span>
+            <p class="focus-badge__text">Deep<br>Work ✦</p>
+          </div>
+        </aside>
+
+      </main>
+
+      <!-- Controls -->
+      <div class="controls" role="group" aria-label="Керування таймером">
+        <button id="btn-reset" class="btn btn--ghost btn--icon" aria-label="Скинути таймер" title="Скинути">↺</button>
+        <button id="btn-start" class="btn btn--primary" aria-label="Запустити таймер">▶ Start</button>
+        <button id="btn-skip"  class="btn btn--ghost btn--icon" aria-label="Пропустити сесію" title="Далі">⏭</button>
+      </div>
+
+      <!-- Settings footer -->
+      <footer class="settings" role="region" aria-label="Налаштування">
+        <label class="settings__toggle">
+          <input type="checkbox" id="opt-sound" checked>
+          <span>🔔 Sound</span>
+        </label>
+        <label class="settings__toggle">
+          <input type="checkbox" id="opt-autostart">
+          <span>⏱ Auto-start</span>
+        </label>
+        <label class="settings__toggle">
+          <input type="checkbox" id="opt-dark">
+          <span>🌙 Dark</span>
+        </label>
+      </footer>
+
+      <p class="app-footer-tagline" aria-hidden="true">STAY FOCUSED · TAKE BREAKS · REPEAT</p>
+
+    </div><!-- /.app-card -->
+  </div><!-- /#app -->
+
+  <script src="app.js"></script>
+</body>
+</html>
