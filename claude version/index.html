@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Помідорний таймер 🍅</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Заголовок -->
+    <header class="app-header">
+      <h1 class="app-title">POMODORO</h1>
+    </header>
+
+    <!-- Перемикач режимів -->
+    <nav class="mode-switcher">
+      <button class="mode-btn mode-btn--active" data-mode="work">🍅 Робота</button>
+      <button class="mode-btn" data-mode="short-break">☕ Пауза</button>
+      <button class="mode-btn" data-mode="long-break">🌿 Відпочинок</button>
+    </nav>
+
+    <!-- Цифровий таймер зверху -->
+    <div class="timer-display-row">
+      <button class="timer-adj" id="btn-dec">−</button>
+      <output id="timer-output" class="timer-digits">25:00</output>
+      <button class="timer-adj" id="btn-inc">+</button>
+    </div>
+
+    <!-- Головна сцена: помідор зі слайдером -->
+    <main class="tomato-stage">
+      <svg
+        id="arc-svg"
+        viewBox="0 0 400 400"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- Тіло помідора (червоне коло як заміна ілюстрації) -->
+        <defs>
+          <radialGradient id="tomatoGrad" cx="40%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#E8564A"/>
+            <stop offset="60%" stop-color="#D63B2F"/>
+            <stop offset="100%" stop-color="#8B1A12"/>
+          </radialGradient>
+          <radialGradient id="highlightGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.5)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </radialGradient>
+          <clipPath id="tomatoClip">
+            <circle cx="200" cy="215" r="112"/>
+          </clipPath>
+        </defs>
+
+        <!-- Тіло -->
+        <circle cx="200" cy="215" r="112" fill="url(#tomatoGrad)" class="tomato-body"/>
+        <!-- Відблиск -->
+        <ellipse cx="168" cy="175" rx="28" ry="18" fill="url(#highlightGrad)" transform="rotate(-25 168 175)" opacity="0.7"/>
+        <!-- Тінь знизу -->
+        <ellipse cx="200" cy="323" rx="80" ry="12" fill="rgba(0,0,0,0.18)"/>
+
+        <!-- Ніжка -->
+        <path d="M200 103 Q206 82 218 75 Q207 92 214 103" fill="#3A7D2C" stroke="#2D6020" stroke-width="1"/>
+        <!-- Листки -->
+        <path d="M200 106 Q183 88 172 93 Q187 104 200 106Z" fill="#4E9940"/>
+        <path d="M200 106 Q217 88 228 93 Q213 104 200 106Z" fill="#4E9940"/>
+        <path d="M200 106 Q194 80 200 72 Q206 80 200 106Z" fill="#5BA845"/>
+
+        <!-- ═══ СЛАЙДЕР ШКАЛА (по центру помідора) ═══ -->
+        <!-- Трек (повна дуга) -->
+        <path id="slider-track" fill="none"/>
+        <!-- Прогрес дуга -->
+        <path id="slider-progress" fill="none"/>
+        <!-- Позначки та підписи -->
+        <g id="tick-marks"></g>
+        <g id="tick-labels"></g>
+        <!-- Маркер (повзунок) -->
+        <g id="slider-handle-group">
+          <circle id="slider-handle"
+            r="13"
+            tabindex="0"
+            role="slider"
+            aria-label="Час"
+            aria-valuemin="1"
+            aria-valuemax="60"
+            aria-valuenow="25"
+          />
+          <!-- Трикутна стрілка над маркером -->
+          <polygon id="handle-arrow" points="0,-22 -7,-8 7,-8"/>
+        </g>
+
+        <!-- Центральний текст всередині помідора -->
+        <text id="center-minutes" x="200" y="228" text-anchor="middle" class="center-min-text">25</text>
+
+      </svg>
+    </main>
+
+    <!-- Кнопки керування -->
+    <div class="controls">
+      <button id="btn-reset" class="btn btn--ghost">↺ Скинути</button>
+      <button id="btn-start" class="btn btn--primary">▶ Старт</button>
+      <button id="btn-skip" class="btn btn--ghost">⏭ Далі</button>
+    </div>
+
+    <!-- Налаштування -->
+    <footer class="settings">
+      <label class="settings__toggle">
+        <input type="checkbox" id="opt-sound" checked> 🔔 Звук
+      </label>
+      <label class="settings__toggle">
+        <input type="checkbox" id="opt-autostart"> ⏱ Авто-старт
+      </label>
+      <div class="session-counter">
+        Сесій: <strong id="session-count">0</strong>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="timer.js"></script>
+</body>
+</html>
